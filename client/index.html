@@ -118,7 +118,7 @@
             if (fromDate && toDate) {
                 var filteredData = data.filter(function (item) {
                     var date = Date.parse(item["test_sales.transaction_date"], "y-m-d")
-                    if (date > fromDate && date < toDate) {
+                    if (date >= fromDate && date <= toDate) {
                         return item;
                     };
                 });
