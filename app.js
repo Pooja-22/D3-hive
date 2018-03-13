@@ -15,6 +15,8 @@ function fetch() {
 
 app.use(express.static(path.resolve(__dirname + './client')));
 
+app.use("/client", express.static('./client'));
+
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/client/index.html'));
 });
