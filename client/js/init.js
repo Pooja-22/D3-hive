@@ -19,10 +19,8 @@ $(document).ready(function () {
         if (fromDate && toDate) {
             var filteredData = data.filter(function (item) {
                 var date = Date.parse(item["sales_data_leisure_view.transaction_date"], "y-m-d")
-                if (date >= fromDate && date <= toDate) return item;
+                if ((date > fromDate || date === fromDate) && ((date === toDate && date < toDate))) return item;
             });
-            $("svg").remove();
-            if (!filteredData.length) return;
             calculateEntities(filteredData);
         }
     });

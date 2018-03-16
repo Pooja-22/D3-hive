@@ -15,6 +15,8 @@ function calculateEntities (data) {
     $("#net_revenue_data").text(net_revenue.toFixed(0));
     $("#gross_revenue_data").text(gross_revenue.toFixed(0));
     $("#avg_gross_revenue_data").text(avg_gross_revenue.toFixed(0));
+    $("svg").remove();
+    if (!data.length) return;
     calculateGraphData(data)
 };
 
@@ -140,7 +142,7 @@ function drawGrossRevenueGraph (data) {
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom,
         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
+
     var x0 = d3.scaleBand()
         .rangeRound([0, width])
         .paddingInner(0.1);
@@ -402,7 +404,6 @@ function drawTransactionGraph(data) {
 
         g.append("text")
             .attr("transform", function(d, i) {
-                console.log(d, i)
                 var _d = arc.centroid(d);
                 _d[0] *= 1.5 + i/10;	//multiply by a constant factor
                 _d[1] *= 1.5 + 1/10;	//multiply by a constant factor
