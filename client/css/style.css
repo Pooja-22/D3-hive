@@ -1,4 +1,4 @@
-#widget {
+.widget {
     text-align: center;
 }
 .label {
@@ -21,25 +21,4 @@
 }
 #avg {
     margin-right: 100px;
-}
-#filterDiv {
-    margin-bottom: 20px;
-}
-.margin {
-    margin-left: 20px;
-}
-.widget {
-    text-align: center;
-}
-#txn_amount {
-    font-size: 50px;
-}
-.bar {
-    fill: steelblue;
-}
-.bar:hover {
-    fill: brown;
-}
-.axis--x path {
-    display: none;
 }
