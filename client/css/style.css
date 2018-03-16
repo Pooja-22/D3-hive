@@ -1,0 +1,45 @@
+#widget {
+    text-align: center;
+}
+.label {
+    font-size: 20px;
+    color: rgba(69, 69, 69, 0.61);
+}
+.value {
+    font-size: 35px;
+    font-weight: 300;
+}
+.desc {
+    padding: 20px;
+    font-size: 20px;
+    text-decoration: underline;
+}
+#average_net_revenue_data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#avg {
+    margin-right: 100px;
+}
+#filterDiv {
+    margin-bottom: 20px;
+}
+.margin {
+    margin-left: 20px;
+}
+.widget {
+    text-align: center;
+}
+#txn_amount {
+    font-size: 50px;
+}
+.bar {
+    fill: steelblue;
+}
+.bar:hover {
+    fill: brown;
+}
+.axis--x path {
+    display: none;
+}

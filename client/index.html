@@ -2,144 +2,44 @@
 <meta charset="utf-8">
 <html>
 <head>
-    <style>
-        body {
-            text-align: center;
-        }
-        #filterDiv {
-            margin-bottom: 20px;
-        }
-        .margin {
-            margin-left: 20px;
-        }
-        .widget {
-            text-align: center;
-        }
-        #txn_amount {
-            font-size: 50px;
-        }
-        .bar {
-            fill: steelblue;
-        }
-        .bar:hover {
-            fill: brown;
-        }
-        .axis--x path {
-            display: none;
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="/client/css/style.css">
 </head>
-<body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous">
 </script>
-<script>
-    $(document).ready(function () {
-        var data = [];
-        if(localStorage && localStorage.data) {
-            data = JSON.parse(localStorage.data);
-            filterData(JSON.parse(localStorage.data))
-        } else {
-            $.get('/data').then(function (res) {
-                data = JSON.parse(res[0]);
-                localStorage.setItem("data", JSON.stringify(data));
-                filterData(data)
-            });
-        }
 
-        function drawGraph(data) {
-            d3.select("svg").remove();
-            var svg = d3.select("body").append("svg").attr("width", 300).attr("height", 500),
-                    margin = {top: 20, right: 20, bottom: 30, left: 40},
-                    width = +svg.attr("width") - margin.left - margin.right,
-                    height = +svg.attr("height") - margin.top - margin.bottom;
-
-            var x = d3.scaleBand().rangeRound([0, width]).padding(0.1), y = d3.scaleLinear().rangeRound([height, 0]);
-
-            var g = svg.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            x.domain(data.map(function(d) {return d.channel; }));
-            y.domain([0, d3.max(data, function(d) { return d.amount; })]);
-
-            g.append("g")
-                    .attr("class", "axis axis--x")
-                    .call(d3.axisBottom(x))
-                    .attr("transform", "translate(0," + height + ")")
-                    .append("text");
-
-            g.append("g")
-                    .attr("class", "axis axis--y")
-                    .call(d3.axisLeft(y))
-                    .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 7)
-                    .attr("dy", "0.71em")
-                    .attr("text-anchor", "end")
-
-            g.selectAll(".bar")
-                    .data(data)
-                    .enter().append("rect")
-                    .attr("class", "bar")
-                    .attr("x", function(d) { return x(d.channel); })
-                    .attr("y", function(d) { return y(d.amount); })
-                    .attr("width", "40")
-                    .attr("height", function(d) { return height - y(d.amount); });
-        }
-
-        function filterData(data) {
-            var updatedData = [];
-            var service_amount = {};
-            var txn_amount = 0;
-            data.map(function(item) {
-                txn_amount = txn_amount + item["test_sales.txn_amount"];
-                if (item["test_sales.channel"] in service_amount) {
-                    service_amount[item["test_sales.channel"]] = service_amount[item["test_sales.channel"]] + item["test_sales.txn_amount"]
-                } else {
-                    service_amount[item["test_sales.channel"]] = item["test_sales.txn_amount"]
-                }
-            });
-            for (key in service_amount) {
-                updatedData.push({
-                    channel: key,
-                    amount: service_amount[key]
-                })
-            }
-            $("#txn_amount").text(txn_amount)
-            drawGraph(updatedData);
-        }
-
-        $("#filter").on('click', function () {
-            var fromDate = Date.parse($('#from-date').val(), 'y-m-d');
-            var toDate = Date.parse($('#to-date').val(), 'y-m-d');
-            if (fromDate && toDate) {
-                var filteredData = data.filter(function (item) {
-                    var date = Date.parse(item["test_sales.transaction_date"], "y-m-d")
-                    if (date >= fromDate && date <= toDate) {
-                        return item;
-                    };
-                });
-                filterData(filteredData)
-            }
-        })
-    })
-
-</script>
+<script type="text/javascript" src="/client/js/init.js"></script>
+<script type="text/javascript" src="/client/js/entities_cal.js"></script>
+<body>
 <div class="widget">
     <div id="filterDiv">
-        <span>From:</span>
-        <input type="date" id="from-date">
-        <span class="margin">To:</span>
-        <input type="date" id="to-date">
+        <span>From:</span><input type="date" id="from-date">
+        <span class="margin">To:</span><input type="date" id="to-date">
         <button class="margin" id="filter">Submit</button>
     </div>
-    <div>
-        <span>Gross Revenue</span>
-        <div id="txn_amount"></div>
+    <div id="gross_revenue">
+        <div class="label">Gross Revenue</div>
+        <div id="gross_revenue_data" class="value"></div>
     </div>
+    <div class="desc">Gross Revenue at service, channel and city level</div>
+    <div id="transactions">
+        <div class="label">Transactions</div>
+        <div id="transactions_data" class="value"></div>
+    </div>
+    <div class="desc">Total number of transactions at service and channel level</div>
+    <div id="average_net_revenue">
+        <div id="average_net_revenue_data">
+            <div id="avg">
+                <div class="label">Average Gross Revenue</div><div id="avg_gross_revenue_data" class="value"></div>
+            </div>
+            <div>
+                <div class="label">Net Revenue</div><div id="net_revenue_data" class="value"></div>
+            </div>
+        </div>
+    </div>
+    <div class="desc">Average Gross Revenue and Net Revenue at service and channel level</div>
 </div>
 </body>
 </html>
