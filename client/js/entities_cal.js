@@ -182,7 +182,7 @@ function drawGrossRevenueGraph (data) {
             .attr("height", function(d) { return height - y(d.value); })
             .attr("fill", function (d) {
                 return z(d.key);
-            })
+            });
 
         d3.selectAll('rect')
             .on("click", function (d, i, k) {
