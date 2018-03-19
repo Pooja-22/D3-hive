@@ -1,7 +1,9 @@
 /**
  * Gross Revenue
  */
+var completeData = [];
 function calculateEntities (data) {
+    completeData = data;
     var gross_revenue = 0, avg_gross_revenue = 0, net_revenue = 0, length = 0;
     data.map(function (item) {
         var txn_amount = item["sales_data_leisure_view.txn_amount"] || 0;
@@ -11,10 +13,10 @@ function calculateEntities (data) {
         length++;
     });
     avg_gross_revenue = gross_revenue && gross_revenue / length;
-    $("#transactions_data").text(length);
-    $("#net_revenue_data").text(net_revenue.toFixed(0));
-    $("#gross_revenue_data").text(gross_revenue.toFixed(0));
-    $("#avg_gross_revenue_data").text(avg_gross_revenue.toFixed(0));
+    $("#transactions_data").text(length.toLocaleString('en-IN'));
+    $("#net_revenue_data").text(net_revenue.toLocaleString('en-IN'));
+    $("#gross_revenue_data").text(gross_revenue.toLocaleString('en-IN'));
+    $("#avg_gross_revenue_data").text(avg_gross_revenue.toLocaleString('en-IN'));
     $("svg").remove();
     if (!data.length) return;
     calculateGraphData(data)
@@ -156,7 +158,7 @@ function drawGrossRevenueGraph (data) {
     var z = d3.scaleOrdinal()
         .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-        x0.domain(data.map(function(d) { return d.type; }));
+    x0.domain(data.map(function(d) { return d.type; }));
         x1.domain(keys).rangeRound([1, x0.bandwidth()]);
         y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
 
@@ -178,12 +180,20 @@ function drawGrossRevenueGraph (data) {
             .attr("y", function(d) { return y(d.value); })
             .attr("width", x1.bandwidth())
             .attr("height", function(d) { return height - y(d.value); })
-            .attr("fill", function(d) { return z(d.key); });
+            .attr("fill", function (d) {
+                return z(d.key);
+            })
+
+        d3.selectAll('rect')
+            .on("click", function (d, i, k) {
+                calculateDateWiseGrossRevenue(d.key);
+                d3.event.stopPropagation();
+            })
 
         g.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x0));
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x0));
 
         g.append("g")
             .attr("class", "axis")
@@ -342,16 +352,16 @@ function drawTransactionGraph(data) {
             if (item.type === "service") {
                 if (key !== 'type') {
                     serviceData.push({
-                        type: key,
-                        transactions: item[key],
+                        key: key,
+                        value: item[key],
                     })
                 }
             }
             if (item.type === "channel") {
                 if (key !== 'type') {
                     channelData.push({
-                        type: key,
-                        transactions: item[key],
+                        key: key,
+                        value: item[key],
                     })
                 }
             }
@@ -359,66 +369,105 @@ function drawTransactionGraph(data) {
     })
 
     serviceData.map(function (item) {
-        serviceCount = serviceCount + item.transactions;
+        serviceCount = serviceCount + item.value;
     })
 
     channelData.map(function (item) {
-        channelCount = channelCount + item.transactions;
+        channelCount = channelCount + item.value;
     })
 
-    createChart(serviceData, serviceCount);
-    createChart(channelData, channelCount);
+    createChart(serviceData, serviceCount, '#transactions');
+    createChart(channelData, channelCount, '#transactions');
+}
 
-    function createChart (data, totalCount) {
-        var width = 600,
-            height = 540,
-            radius = 200;
+/**
+ *
+ * @param data
+ * @param totalCount
+ * @param element
+ * @param id
+ */
+function createChart (data, totalCount, element) {
+    var width = 600,
+        height = 540,
+        radius = 200;
 
-        var color = d3.scaleOrdinal(d3.schemeCategory20b);
+    var color = d3.scaleOrdinal(d3.schemeCategory20b);
 
-        var arc = d3.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(100);
+    var arc = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(100);
 
-        var pie = d3.pie()
-            .sort(null)
-            .value(function(d) {
-                return d.transactions;
-            });
+    var pie = d3.pie()
+        .sort(null)
+        .value(function(d) {
+            return d.value;
+        });
 
-        var svg = d3.select('#transactions').append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+    var svg = d3.select(element).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-        var g = svg.selectAll(".arc")
-            .data(pie(data))
-            .enter().append("g");
+    var g = svg.selectAll(".arc")
+        .data(pie(data))
+        .enter().append("g");
 
-        g.append("path")
-            .attr("d", arc)
-            .style("fill", function(d,i) {
-                return color(d.data.type);
-            });
+    g.append("path")
+        .attr("d", arc)
+        .style("fill", function(d,i) {
+            return color(d.data.key);
+        });
 
-        g.append("text")
-            .attr("transform", function(d, i) {
-                var _d = arc.centroid(d);
-                _d[0] *= 1.5 + i/10;	//multiply by a constant factor
-                _d[1] *= 1.5 + 1/10;	//multiply by a constant factor
-                return "translate(" + _d + ")";
+    g.append("text")
+        .attr("transform", function(d, i) {
+            var _d = arc.centroid(d);
+            _d[0] *= 1.5 + i/10;	//multiply by a constant factor
+            _d[1] *= 1.5 + 1/10;	//multiply by a constant factor
+            return "translate(" + _d + ")";
+        })
+        .attr("dy", ".50em")
+        .style("text-anchor", "middle")
+        .text(function(d) {
+            return d.data.key;
+        });
+
+    g.append("text")
+        .attr("text-anchor", "middle")
+        .attr('font-size', '2em')
+        .text(totalCount);
+}
+
+/**
+ * Calculate date wise data of gross revenue for particular service/channel/city
+ */
+function calculateDateWiseGrossRevenue (value) {
+    var graphData = [], dates = [], totalCount = 0;
+    completeData.map(function (item) {
+        if(dates.indexOf(item["sales_data_leisure_view.transaction_date"]) === -1){
+            dates.push(item["sales_data_leisure_view.transaction_date"]);
+        }
+    })
+    dates.map(function (date) {
+        var gross_revenue = 0;
+        completeData.map(function (item) {
+            var itemDate = item["sales_data_leisure_view.transaction_date"];
+            var service = item["sales_data_leisure_view.service"];
+            var channel = item["sales_data_leisure_view.channel"]
+            if ((itemDate === date && service === value) || (itemDate === date && channel === value)) {
+                gross_revenue = gross_revenue + item["sales_data_leisure_view.txn_amount"];
+            }
+        })
+        if (gross_revenue) {
+            graphData.push({
+                key: date,
+                value: gross_revenue,
             })
-            .attr("dy", ".50em")
-            .style("text-anchor", "middle")
-            .text(function(d) {
-                return d.data.type;
-            });
+        }
+    })
 
-        g.append("text")
-            .attr("text-anchor", "middle")
-            .attr('font-size', '2em')
-            .text(totalCount);
-    }
+    $('#gross_revenue > svg').slice(1).remove();
+    createChart(graphData, value, '#gross_revenue', "gross_revenue_single")
 }
 

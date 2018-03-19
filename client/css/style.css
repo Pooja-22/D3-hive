@@ -1,8 +1,12 @@
 .widget {
     text-align: center;
 }
+#filterDiv {
+    padding: 20px;
+}
 .label {
     font-size: 20px;
+    margin-top: 10px;
     color: rgba(69, 69, 69, 0.61);
 }
 .value {
@@ -13,6 +17,7 @@
     padding: 20px;
     font-size: 20px;
     text-decoration: underline;
+    padding-bottom: 10px;
 }
 #average_net_revenue_data {
     display: flex;
