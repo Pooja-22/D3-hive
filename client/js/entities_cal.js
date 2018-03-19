@@ -3,6 +3,7 @@
  */
 var completeData = [];
 function calculateEntities (data) {
+    $('#loader').hide();
     completeData = data;
     var gross_revenue = 0, avg_gross_revenue = 0, net_revenue = 0, length = 0;
     data.map(function (item) {

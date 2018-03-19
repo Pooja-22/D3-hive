@@ -3,11 +3,13 @@ $(document).ready(function () {
     var data = [];
 
     $.get('/data').then(function (res) {
+        $('#loader').show();
         data = JSON.parse(res[0]);
         calculateEntities(data);
     });
 
     $("#filter").on('click', function () {
+        $('#loader').show();
         var filteredData = [];
         var fromDate = Date.parse($('#from-date').val());
         var toDate = Date.parse($('#to-date').val());

@@ -1,4 +1,4 @@
-.widget {
+#widget {
     text-align: center;
 }
 #filterDiv {
@@ -26,4 +26,14 @@
 }
 #avg {
     margin-right: 100px;
+}
+#loader {
+    position: absolute;
+    height: 95%;
+    width: 95%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    font-size: 30px;
 }
