@@ -462,7 +462,7 @@ function calculateDateWiseGrossRevenue (value) {
         })
         if (gross_revenue) {
             graphData.push({
-                key: date,
+                key: date.substring(0, 10),
                 value: gross_revenue,
             })
         }
