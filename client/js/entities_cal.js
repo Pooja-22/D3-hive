@@ -262,7 +262,7 @@ function drawGrossRevenueGraph (data) {
 function drawAverageNetRevenueGraph(net_revenue, avg_gross_revenue, type) {
 
     var z = d3.scaleOrdinal()
-        .range(["#98abc5", "#d0743c"]);
+        .range(["#d0743c", "#98abc5"]);
 
     var net_revenue_data = [], avg_gross_revenue_data = [], range= [];
 
@@ -323,7 +323,6 @@ function drawAverageNetRevenueGraph(net_revenue, avg_gross_revenue, type) {
         .attr("text-anchor", "end")
         .text("Average Gross & Net Revenue");
 
-
     g.append("path")
         .datum(net_revenue_data)
         .attr("fill", "none")
@@ -361,7 +360,7 @@ function drawAverageNetRevenueGraph(net_revenue, avg_gross_revenue, type) {
         .attr("x", width - 4)
         .attr("y", 9.5)
         .attr("dy", "0.32em")
-        .text(function(d) { return d; });
+        .text(function(d) { console.log(d); return d; });
 }
 
 /**
