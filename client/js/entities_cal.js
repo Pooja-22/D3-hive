@@ -424,7 +424,7 @@ function createChart (data, totalCount, element) {
     g.append("text")
         .attr("transform", function(d, i) {
             var _d = arc.centroid(d);
-            _d[0] *= 1.5 + i/5;	//multiply by a constant factor
+            _d[0] *= 1.5 + i/10;	//multiply by a constant factor
             _d[1] *= 1.5 + i/10;//multiply by a constant factor
             return "translate(" + _d + ")";
         })
