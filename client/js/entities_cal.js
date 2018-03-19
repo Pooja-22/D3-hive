@@ -189,6 +189,8 @@ function drawGrossRevenueGraph (data) {
             .on("mouseover", function() { tooltip.style("display", null); })
             .on("mouseout", function() { tooltip.style("display", "none"); })
             .on("mousemove", function(d) {
+                var xPosition = d3.event.offsetX + 10;
+                var yPosition = d3.event.offsetY + 10;
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                 tooltip.select("text").text(d.key);
             })
@@ -459,7 +461,7 @@ function createChart (data, totalCount, element) {
 
     g.append("text")
         .attr("text-anchor", "middle")
-        .attr('font-size', '2em')
+        .attr('font-size', '1.5em')
         .text(totalCount);
 }
 
