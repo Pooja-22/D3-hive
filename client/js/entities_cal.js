@@ -186,7 +186,13 @@ function drawGrossRevenueGraph (data) {
             });
 
         d3.selectAll('rect')
-            .on("click", function (d, i, k) {
+            .on("mouseover", function() { tooltip.style("display", null); })
+            .on("mouseout", function() { tooltip.style("display", "none"); })
+            .on("mousemove", function(d) {
+                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+                tooltip.select("text").text(d.key);
+            })
+            .on("click", function (d) {
                 calculateDateWiseGrossRevenue(d.key);
                 d3.event.stopPropagation();
             })
@@ -228,6 +234,23 @@ function drawGrossRevenueGraph (data) {
             .attr("y", 9.5)
             .attr("dy", "0.32em")
             .text(function(d) { return d; });
+
+        var tooltip = svg.append("g")
+            .attr("class", "tooltip")
+            .style("display", "none");
+
+        tooltip.append("rect")
+            .attr("width", 60)
+            .attr("height", 20)
+            .attr("fill", "transparent")
+            .style("opacity", 0.5);
+
+        tooltip.append("text")
+            .attr("x", 30)
+            .attr("dy", "1.2em")
+            .style("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .attr("font-weight", "bold");
 }
 
 /**
