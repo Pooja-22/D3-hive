@@ -390,7 +390,7 @@ function drawTransactionGraph(data) {
  */
 function createChart (data, totalCount, element) {
     var width = 600,
-        height = 540,
+        height = 600,
         radius = 200;
 
     var color = d3.scaleOrdinal(d3.schemeCategory20b);
@@ -424,11 +424,11 @@ function createChart (data, totalCount, element) {
     g.append("text")
         .attr("transform", function(d, i) {
             var _d = arc.centroid(d);
-            _d[0] *= 1.5 + i/10;	//multiply by a constant factor
-            _d[1] *= 1.5 + 1/10;	//multiply by a constant factor
+            _d[0] *= 1.5 + i/5;	//multiply by a constant factor
+            _d[1] *= 1.5 + i/10;//multiply by a constant factor
             return "translate(" + _d + ")";
         })
-        .attr("dy", ".50em")
+        .attr("dy", ".70em")
         .style("text-anchor", "middle")
         .text(function(d) {
             return d.data.key;
